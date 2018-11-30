@@ -126,11 +126,11 @@ for i = 1 : numel(listing)
     clear X_eeg X_eog label y
 end
 
-patinfo.ch_orig{1} = "FpzCz";
-patinfo.ch_orig{1} = "EOGhorizontal";
+patinfo.ch_orig{1} = 'FpzCz';
+patinfo.ch_orig{1} = 'EOGhorizontal';
 patinfo.fs = 100;
-patinfo.chlabels = {"EEG", "EOG"};
-patinfo.classes = {"W", "R", "N1", "N2", "N3"};
+patinfo.chlabels = {'EEG', 'EOG'};
+patinfo.classes = {'W', 'R', 'N1', 'N2', 'N3'};
 
 for s = 1 : Nsub
     labels = logical(y_all{s});
