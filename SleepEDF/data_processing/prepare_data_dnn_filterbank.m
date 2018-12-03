@@ -26,7 +26,7 @@ for s = 1 : numel(listing)
         label_t{i} = ones(T, 1)*label_all(i);
         y_t{i} = repmat(y_all(i,:),T,1);
     end
-    X = cell2mat(X_t);
+    X = cell2mat(X_t);  %reformat X_t (2130,29,129)  into X (2130*29,129), meaning each second(later in DNN should be each 2 seconds) as a sample
     label = cell2mat(label_t);
     y = cell2mat(y_t);
     clear X_t label_t y_t
