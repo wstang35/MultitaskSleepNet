@@ -1,0 +1,24 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="train_cnn1d_eval_gpu0" type="PythonConfigurationType" factoryName="Python">
+    <module name="multitask_1max_cnn_1to1" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <option name="SDK_HOME" value="D:\Tool\Python\Python36\python.exe" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train_cnn1d_eval_gpu0.py" />
+    <option name="PARAMETERS" value="--eeg_pretrainedfb_path &quot;../dnn-filterbank/dnn_filterbank_sleep_20_512_256_512_(08)_eeg/n1/filterbank.mat&quot; --eog_pretrainedfb_path &quot;&quot; --emg_pretrainedfb_path &quot;&quot; --eeg_train_data &quot;../../data_processing/tf_data/cnn_filterbank_eval_eeg/train_list_n1.txt&quot; --eeg_eval_data &quot;../../data_processing/tf_data/cnn_filterbank_eval_eeg/eval_list_n1.txt&quot; --eeg_test_data &quot;../../data_processing/tf_data/cnn_filterbank_eval_eeg/test_list_n1.txt&quot; --eog_train_data &quot;&quot; --eog_eval_data &quot;&quot; --eog_test_data &quot;&quot; --emg_train_data &quot;&quot; --emg_eval_data &quot;&quot; --emg_test_data &quot;&quot; --out_dir './cnn1d_sleep_357_1000_(08)_eval_1chan/n1/' --dropout_keep_prob 0.8 --num_filter 1000" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>

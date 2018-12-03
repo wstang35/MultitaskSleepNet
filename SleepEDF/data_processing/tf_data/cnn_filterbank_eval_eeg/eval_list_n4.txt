@@ -1,4 +1,4 @@
-../data_processing/mat/n09_cnn_filterbank_eeg.mat	1994
-../data_processing/mat/n11_cnn_filterbank_eeg.mat	2058
-../data_processing/mat/n15_cnn_filterbank_eeg.mat	1809
-../data_processing/mat/n20_cnn_filterbank_eeg.mat	2883
+../../data_processing/mat/n09_cnn_filterbank_eeg.mat	1994
+../../data_processing/mat/n11_cnn_filterbank_eeg.mat	2058
+../../data_processing/mat/n15_cnn_filterbank_eeg.mat	1809
+../../data_processing/mat/n20_cnn_filterbank_eeg.mat	2883

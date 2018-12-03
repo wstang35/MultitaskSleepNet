@@ -1,4 +1,4 @@
-../data_processing/mat/n02_cnn_filterbank_eog.mat	2130
-../data_processing/mat/n06_cnn_filterbank_eog.mat	1968
-../data_processing/mat/n09_cnn_filterbank_eog.mat	1994
-../data_processing/mat/n15_cnn_filterbank_eog.mat	1809
+../../data_processing/mat/n02_cnn_filterbank_eog.mat	2130
+../../data_processing/mat/n06_cnn_filterbank_eog.mat	1968
+../../data_processing/mat/n09_cnn_filterbank_eog.mat	1994
+../../data_processing/mat/n15_cnn_filterbank_eog.mat	1809

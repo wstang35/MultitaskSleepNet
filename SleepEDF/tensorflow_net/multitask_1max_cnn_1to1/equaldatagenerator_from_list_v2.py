@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.io import loadmat
 import h5py
-
+import os
 class EqualDataGenerator:
     def __init__(self, filelist, data_shape=np.array([29, 129]),shuffle=False):
 
@@ -64,7 +64,7 @@ class EqualDataGenerator:
         """
         # Load data
         print(filename)
-        data = h5py.File(filename,'r')
+        data = h5py.File(os.path.abspath(filename),'r')
         data.keys()
         X = np.array(data['X'])
         X = np.transpose(X, (2, 1, 0))  # rearrange dimension
