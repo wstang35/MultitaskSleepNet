@@ -29,7 +29,7 @@ for s = 1 : Nfold
         sname = listing(train_s(i)).name;
         load([mat_path,sname], 'label');
         num_sample = numel(label);
-        file_path = ['../data_processing/mat/',sname];
+        file_path = ['../../data_processing/mat/',sname];
         fprintf(fid, '%s\t%d\n', file_path, num_sample);
     end
     fclose(fid);
@@ -41,7 +41,7 @@ for s = 1 : Nfold
         sname = listing(test_s(i)).name;
         load([mat_path,sname], 'label');
         num_sample = numel(label);
-        file_path = ['../data_processing/mat/',sname];
+        file_path = ['../../data_processing/mat/',sname];
         fprintf(fid, '%s\t%d\n', file_path, num_sample);
     end
     fclose(fid);
@@ -67,7 +67,7 @@ for s = 1 : Nfold
         sname = listing(train_s(i)).name;
         load([mat_path,sname], 'label');
         num_sample = numel(label);
-        file_path = ['../data_processing/mat/',sname];
+        file_path = ['../../data_processing/mat/',sname];
         fprintf(fid, '%s\t%d\n', file_path, num_sample);
     end
     fclose(fid);
@@ -79,7 +79,7 @@ for s = 1 : Nfold
         sname = listing(test_s(i)).name;
         load([mat_path,sname], 'label');
         num_sample = numel(label);
-        file_path = ['../data_processing/mat/',sname];
+        file_path = ['../../data_processing/mat/',sname];
         fprintf(fid, '%s\t%d\n', file_path, num_sample);
     end
     fclose(fid);
