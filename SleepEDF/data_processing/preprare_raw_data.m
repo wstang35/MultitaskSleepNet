@@ -120,7 +120,7 @@ for i = 1 : numel(listing)
         data_all{sub_id} = data;
         y_all{sub_id} = y;
     else
-        data_all{sub_id} = cat(1, data_all{sub_id}, data);
+        data_all{sub_id} = cat(1, data_all{sub_id}, data);  % wilson: concatenate first night data with second night data
         y_all{sub_id} = [y_all{sub_id}; y];
     end
     clear X_eeg X_eog label y
