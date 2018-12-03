@@ -1,0 +1,4 @@
+../data_processing/mat/n01_cnn_filterbank_eog.mat	1809
+../data_processing/mat/n13_cnn_filterbank_eog.mat	1787
+../data_processing/mat/n15_cnn_filterbank_eog.mat	1809
+../data_processing/mat/n17_cnn_filterbank_eog.mat	2066
