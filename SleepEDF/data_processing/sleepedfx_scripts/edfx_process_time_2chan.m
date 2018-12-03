@@ -106,8 +106,8 @@ function [chan_data_eeg_new, chan_data_eog_new, hypnogram_new] = edfx_process_ti
     end
     
 	% Index of start and end samples to read data
-    start_eeg = etime(btvec,rec_start_vec) * fs + 1;
-    end_eeg  = start_eeg + epochs_to_use * epoch_time * fs - 1;
+    start_eeg = etime(btvec,rec_start_vec) * fs + 1; %plus 1, because relative to the first sample point
+    end_eeg  = start_eeg + epochs_to_use * epoch_time * fs - 1; %minus 1£¬because total sample points include the start sample point
     
     % truncate data to bed-time duration
     chan_data_eeg_new = chan_data_eeg(start_eeg : end_eeg);
