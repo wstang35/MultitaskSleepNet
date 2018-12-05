@@ -31,8 +31,8 @@ class CNN1DSleep(object):
                 # Apply nonlinearity
                 h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
                 pooled_max = tf.nn.max_pool(h,
-                                            ksize=[1, time_length - filter_size + 1, 1, 1],
-                                            strides=[1, 1, 1, 1],
+                                            ksize=[1, time_length - filter_size + 1, 1, 1], #wilson: 2-maxpool: ksize = [1，ceil((time_length - filter_size + 1)/2), 1, 1]
+                                            strides=[1, 1, 1, 1], #wilson: 2-maxpool: stride = [1, floor((time_length - filter_size + 1)/2), 1, 1]
                                             padding='VALID',
                                             name="pool")
                 pooled_outputs.append(pooled_max)

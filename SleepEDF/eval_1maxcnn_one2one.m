@@ -12,7 +12,7 @@ function [acc, kappa, f1, sens, spec, classwise_sens, classwise_sel, C] = eval_1
     yt = cell(Nfold,1);
      for fold = 1 : Nfold
          fold
-         load(['./tensorflow_net/multitask_1max_cnn_1to1/cnn1d_sleep_357_',num2str(nfilter),'_(08)_eval_',num2str(nchan),'chan/n', num2str(fold), '/test_ret_model_acc.mat']);
+         load(['./tensorflow_net/multitask_1max_cnn_1to1/''/cnn1d_sleep_357_',num2str(nfilter),'_(08)_eval_',num2str(nchan),'chan/n', num2str(fold), '/''/test_ret_model_acc.mat']);
 
          yh{fold} = double(yhat');
 

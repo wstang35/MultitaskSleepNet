@@ -191,7 +191,7 @@ with tf.Graph().as_default():
       allow_soft_placement=FLAGS.allow_soft_placement,
       log_device_placement=FLAGS.log_device_placement)
     session_conf.gpu_options.allow_growth = True
-    sess = tf.Session(config=session_conf)
+    sess = tf.Session(config=session_conf) #wilson: session config
     with sess.as_default():
         cnn = CNN1DSleep(
             time_length=config.time_length,
@@ -205,12 +205,12 @@ with tf.Graph().as_default():
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-4)
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
-        train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
+        train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step) #wilson: compute_gradients and apply_gradients() are two steps of optimizer.minimize()
 
         out_dir = os.path.abspath(os.path.join(os.path.curdir,FLAGS.out_dir))
         print("Writing to {}\n".format(out_dir))
 
-        saver = tf.train.Saver(tf.all_variables(),max_to_keep=1)
+        saver = tf.train.Saver(tf.global_variables(),max_to_keep=1) #wilson: create a saver， max_to_keep=1 means only save 1 model 1 time, default to 5, means to save 5 recent updated model
 
         # initialize all variables
         print("Model initialized")
@@ -301,7 +301,7 @@ with tf.Graph().as_default():
 
 
                     print("{:g} {:g} {:g} {:g} {:g} {:g}".format(eval_acc, eval_fscore, eval_kappa, test_acc, test_fscore,  test_kappa))
-                    with open(os.path.join(out_dir, "result_log.txt"), "a") as text_file:
+                    with open(os.path.join(out_dir, "result_log.txt"), "a") as text_file: #wilson: param a mears append data
                         text_file.write("{:g} {:g} {:g} {:g} {:g} {:g}\n".format(eval_acc, eval_fscore, eval_kappa, test_acc, test_fscore,  test_kappa))
 
                     if(eval_acc > best_acc):
