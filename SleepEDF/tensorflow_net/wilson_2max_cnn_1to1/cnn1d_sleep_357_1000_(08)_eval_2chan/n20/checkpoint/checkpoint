@@ -1,2 +1,2 @@
-model_checkpoint_path: "D:\\Study\\Github\\MultitaskSleepNet\\SleepEDF\\tensorflow_net\\wilson_2max_cnn_1to1\\cnn1d_sleep_357_1000_(08)_eval_2chan\\n20\\checkpoint\\model_step13200.ckpt"
-all_model_checkpoint_paths: "D:\\Study\\Github\\MultitaskSleepNet\\SleepEDF\\tensorflow_net\\wilson_2max_cnn_1to1\\cnn1d_sleep_357_1000_(08)_eval_2chan\\n20\\checkpoint\\model_step13200.ckpt"
+model_checkpoint_path: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to1/cnn1d_sleep_357_1000_(08)_eval_2chan/n20/checkpoint/model_step26150.ckpt"
+all_model_checkpoint_paths: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to1/cnn1d_sleep_357_1000_(08)_eval_2chan/n20/checkpoint/model_step26150.ckpt"

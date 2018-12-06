@@ -49,11 +49,11 @@ class CNN1DSleep(object):
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
         # Add dropout
-        with tf.device('/gpu:0'), tf.name_scope("dropout"):
+        with tf.name_scope("dropout"):
             self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
 
         # Final (unnormalized) scores and predictions
-        with tf.device('/gpu:0'), tf.name_scope("output1"):
+        with tf.name_scope("output1"):
             W1 = tf.Variable(tf.truncated_normal([num_filters_total, num_classes], stddev=0.1), name="W1")
             b1 = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b1")
             l2_loss += tf.nn.l2_loss(W1)
@@ -62,7 +62,7 @@ class CNN1DSleep(object):
             self.predictions1 = tf.argmax(self.scores1, 1, name="predictions1")
 
         # Final (unnormalized) scores and predictions
-        with tf.device('/gpu:0'), tf.name_scope("output2"):
+        with tf.name_scope("output2"):
             W2 = tf.Variable(tf.truncated_normal([num_filters_total, num_classes], stddev=0.1), name="W2")
             b2 = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b2")
             l2_loss += tf.nn.l2_loss(W2)
@@ -71,7 +71,7 @@ class CNN1DSleep(object):
             self.predictions2 = tf.argmax(self.scores2, 1, name="predictions2")
 
         # Final (unnormalized) scores and predictions
-        with tf.device('/gpu:0'), tf.name_scope("output3"):
+        with tf.name_scope("output3"):
             W3 = tf.Variable(tf.truncated_normal([num_filters_total, num_classes], stddev=0.1), name="W3")
             b3 = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b3")
             l2_loss += tf.nn.l2_loss(W3)
@@ -80,14 +80,14 @@ class CNN1DSleep(object):
             self.predictions3 = tf.argmax(self.scores3, 1, name="predictions3")
 
         # CalculateMean cross-entropy loss
-        with tf.device('/gpu:0'), tf.name_scope("loss"):
+        with tf.name_scope("loss"):
             losses1 = tf.nn.softmax_cross_entropy_with_logits(labels=self.input_y1, logits=self.scores1)
             losses2 = tf.nn.softmax_cross_entropy_with_logits(labels=self.input_y2, logits=self.scores2)
             losses3 = tf.nn.softmax_cross_entropy_with_logits(labels=self.input_y3, logits=self.scores3)
             self.loss = tf.reduce_mean(losses1) + tf.reduce_mean(losses3) + tf.reduce_mean(losses2) + l2_reg_lambda * l2_loss
 
         # Accuracy
-        with tf.device('/gpu:0'), tf.name_scope("accuracy"):
+        with tf.name_scope("accuracy"):
             correct_predictions1 = tf.equal(self.predictions1, tf.argmax(self.input_y1, 1))
             self.accuracy1 = tf.reduce_mean(tf.cast(correct_predictions1, "float"), name="accuracy1")
 
