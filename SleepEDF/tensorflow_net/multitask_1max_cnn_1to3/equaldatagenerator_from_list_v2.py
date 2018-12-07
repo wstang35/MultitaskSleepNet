@@ -8,7 +8,7 @@ class EqualDataGenerator:
     def __init__(self, filelist, data_shape=np.array([29, 129]),shuffle=False):
 
         # Init params
-        self.shuffle = shuffle
+        self.shuffle = shuffle #wilson： never shuffle
         self.filelist = filelist
         self.data_shape = data_shape
         self.X = np.array([])

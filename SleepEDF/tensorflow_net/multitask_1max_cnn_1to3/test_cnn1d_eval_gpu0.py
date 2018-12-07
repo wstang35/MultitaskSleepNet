@@ -188,7 +188,7 @@ with tf.Graph().as_default():
                    feed_dict)
             return acc1, acc2, acc3, pred_Y1, pred_Y2, pred_Y3, score1_, score2_, score3_
 
-        saver = tf.train.Saver(tf.all_variables())
+        saver = tf.train.Saver(tf.all_variables()) #wilson: tf.global_variables()
 
         # Load saved model to continue training or initialize all variables
         best_dir = os.path.join(checkpoint_path, "best_model_acc")

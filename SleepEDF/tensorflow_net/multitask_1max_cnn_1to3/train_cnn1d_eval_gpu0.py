@@ -177,7 +177,7 @@ test_generator.X = np.reshape(X, (test_generator.data_size, test_generator.data_
 # update the frequency dimension after filtering
 config.freq_length = train_generator.data_shape[1]
 
-train_batches_per_epoch = np.floor((train_generator.data_size - len(train_generator.boundary_index)) / config.batch_size).astype(np.int16)
+train_batches_per_epoch = np.floor((train_generator.data_size - len(train_generator.boundary_index)) / config.batch_size).astype(np.int16) # n1:146
 eval_batches_per_epoch = np.floor(len(eval_generator.data_index) / config.batch_size).astype(np.int16)
 test_batches_per_epoch = np.floor(len(test_generator.data_index) / config.batch_size).astype(np.int16)
 
@@ -299,7 +299,7 @@ with tf.Graph().as_default():
                         eval_yhat1[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat1_
                         eval_yhat2[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat2_
                         eval_yhat3[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat3_
-                    eval_yhat1 = eval_yhat1 + 1
+                    eval_yhat1 = eval_yhat1 + 1 #wilson: +1 match the origin label (0-4 to 1-5)
                     eval_yhat2 = eval_yhat2 + 1
                     eval_yhat3 = eval_yhat3 + 1
                     eval_acc1 = accuracy_score(eval_generator.label[:-1], eval_yhat1[1:])
