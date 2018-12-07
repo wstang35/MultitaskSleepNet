@@ -28,8 +28,8 @@ class EqualDataGenerator:
         for i in range(self.nclass):
             ind = np.where(self.y[:,i] == 1)[0]
             print(len(ind))
-            mask = np.in1d(ind,self.boundary_index, invert=True)
-            ind = ind[mask]
+            mask = np.in1d(ind, self.boundary_index, invert=True)
+            ind = ind[mask] #wilson: Because the model needs 3 inputs, so remove those data at the boundary from the “middle input” list， but still needed as background input
             print(len(ind))
             self.data_index.append(ind)
 
@@ -61,7 +61,7 @@ class EqualDataGenerator:
             self.X[count : count + len(X)] = X
             self.y[count : count + len(X)] = y
             self.label[count : count + len(X)] = label
-            self.boundary_index = np.append(self.boundary_index, [count, (count + len(X) - 1)])
+            self.boundary_index = np.append(self.boundary_index, [count, (count + len(X) - 1)])  #wilson: boundary_index between different files
             count += len(X)
             print(count)
 
