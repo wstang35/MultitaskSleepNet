@@ -1,4 +1,4 @@
-function [acc, kappa, f1, sens, spec, classwise_sens, classwise_sel, C] = eval_1maxcnn_one2one(nfilter, nchan)
+function [acc, kappa, f1, sens, spec, classwise_sens, classwise_sel, C] = eval_2maxcnn_one2one(nfilter, nchan)
 
     if(nargin == 0)
         nfilter = 1000;

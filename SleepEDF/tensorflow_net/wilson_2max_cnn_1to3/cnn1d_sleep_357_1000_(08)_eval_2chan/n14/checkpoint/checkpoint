@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_1000_(08)_eval_2chan/n14/checkpoint/model_step22650.ckpt"
+all_model_checkpoint_paths: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_1000_(08)_eval_2chan/n14/checkpoint/model_step22650.ckpt"

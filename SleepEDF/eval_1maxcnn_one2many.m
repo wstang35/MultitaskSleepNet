@@ -42,6 +42,12 @@ function [acc, kappa, f1, sens, spec, classwise_sens, classwise_sel, C] = eval_1
         % load ground-truth labels
         load(['./data_processing/mat/n', num2str(fold,'%02d'), '_cnn_filterbank_eeg.mat'], 'label');
         yt{fold} = double(label);
+        
+        % wilson:save predict
+        [~,name,~] = fileparts(mfilename('fullpath'));
+        text = [label yhat'];
+        mkdir(['./error_analysis/',name])
+        xlswrite(['./error_analysis/',name,'/n',num2str(fold,'%02d')],text)
     end
     yh = cell2mat(yh);
     yt = cell2mat(yt);
