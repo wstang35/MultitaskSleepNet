@@ -22,7 +22,7 @@ function [acc, kappa, f1, sens, spec, classwise_sens, classwise_sel, C] = eval_2
     for fold = 1 : Nfold
         fold
         
-        load(['./tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_',num2str(nfilter),'_(08)_eval_',num2str(nchan),'chan_lambda(0.01)/n', num2str(fold), '/test_ret_model_acc.mat']);
+        load(['./tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_',num2str(nfilter),'_(08)_eval_',num2str(nchan),'chan_dropout(0.6)/n', num2str(fold), '/test_ret_model_acc.mat']);
         score2 = softmax(score2);
         score1 = softmax(score1);
         score1 = [score1((1+half):end,:); ones(1,Ncat)];

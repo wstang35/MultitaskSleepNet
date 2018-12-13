@@ -16,11 +16,11 @@ class Config(object):
 
         # Trainging
         self.learning_rate = 1e-4
-        self.l2_reg_lambda = 0.01
+        self.l2_reg_lambda = 0.001
         self.training_epoch = 200
         self.batch_size = 200
         self.batch_size_per_class = 40 # if equal sampling
-        self.dropout_keep_prob = 0.8
+        self.dropout_keep_prob = 0.6
 
         self.evaluate_every = 50
 
