@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_50_(08)_eval_2chan_dropout(0.6)/n9/checkpoint/model_step26400.ckpt"
+all_model_checkpoint_paths: "/home/wilson/Files/Github/MultitaskSleepNet/SleepEDF/tensorflow_net/wilson_2max_cnn_1to3/cnn1d_sleep_357_50_(08)_eval_2chan_dropout(0.6)/n9/checkpoint/model_step26400.ckpt"
