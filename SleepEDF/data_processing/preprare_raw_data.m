@@ -90,7 +90,7 @@ for i = 1 : numel(listing)
     hypnogram = edfx_load_hypnogram( hyp_file );
     
     % process times to determine the in-bed duration
-    [chan_data_eeg_new, chan_data_eog_new, hypnogram_new] = edfx_process_time_2chan(target_dir, chan_data_eeg, chan_data_eog, hypnogram, epoch_time, fs);
+    [chan_data_eeg_new, chan_data_eog_new, hypnogram_new, onset] = edfx_process_time_2chan(target_dir, chan_data_eeg, chan_data_eog, hypnogram, epoch_time, fs);
     
     eeg_epochs = buffer(chan_data_eeg_new, epoch_time*fs);
     eeg_epochs = eeg_epochs';
@@ -99,6 +99,7 @@ for i = 1 : numel(listing)
     eog_epochs = eog_epochs';
 
     label = edfx_hypnogram2label(hypnogram_new);
+    raw_label = label;
     % excluding Unknown and non-score
     ind = (label == 0);
     disp([num2str(sum(ind)), ' epochs excluded.'])
@@ -119,10 +120,20 @@ for i = 1 : numel(listing)
     if(isempty(data_all{sub_id}))
         data_all{sub_id} = data;
         y_all{sub_id} = y;
+        raw_label_all{sub_id} = raw_label;
+        onset_all{sub_id} = onset;
+        raw_epoch_num_all{sub_id} = numel(raw_label);
+        valid_epoch_num_all{sub_id} = numel(label);
     else
         data_all{sub_id} = cat(1, data_all{sub_id}, data);  % wilson: concatenate first night data with second night data
         y_all{sub_id} = [y_all{sub_id}; y];
+        raw_label_all{sub_id} = [raw_label_all{sub_id}; raw_label];
+        onset_all{sub_id} = [onset_all{sub_id}; onset];
+        raw_epoch_num_all{sub_id} = [raw_epoch_num_all{sub_id}; numel(raw_label)];
+        valid_epoch_num_all{sub_id} = [valid_epoch_num_all{sub_id}; numel(label)];
     end
+    
+    
     clear X_eeg X_eog label y
 end
 
@@ -135,7 +146,11 @@ patinfo.classes = {'W', 'R', 'N1', 'N2', 'N3'};
 for s = 1 : Nsub
     labels = logical(y_all{s});
     data = data_all{s};
-    save([raw_data_path, 'n', num2str(s,'%02d'), '.mat'], 'data', 'labels', 'patinfo', '-v7.3');
+    onset = onset_all{s};
+    raw_label = raw_label_all{s};
+    raw_epoch_num = raw_epoch_num_all{s};
+    valid_epoch_num = valid_epoch_num_all{s};
+    save([raw_data_path, 'n', num2str(s,'%02d'), '.mat'], 'data', 'labels', 'patinfo', 'onset', 'raw_label', 'raw_epoch_num', 'valid_epoch_num', '-v7.3');
 end
 
 

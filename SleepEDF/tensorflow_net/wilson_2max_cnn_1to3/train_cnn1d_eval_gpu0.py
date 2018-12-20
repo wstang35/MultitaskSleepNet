@@ -1,5 +1,4 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import numpy as np
 import tensorflow as tf
 
@@ -23,7 +22,7 @@ from equaldatagenerator_from_list_v2 import EqualDataGenerator
 from scipy.io import loadmat
 
 import time
-
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # Parameters
 # ==================================================
 

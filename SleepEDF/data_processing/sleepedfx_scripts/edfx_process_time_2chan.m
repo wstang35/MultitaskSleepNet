@@ -1,4 +1,4 @@
-function [chan_data_eeg_new, chan_data_eog_new, hypnogram_new] = edfx_process_time_2chan(target_dir, chan_data_eeg, chan_data_eog, hypnogram, epoch_time, fs)
+function [chan_data_eeg_new, chan_data_eog_new, hypnogram_new, bt_relative] = edfx_process_time_2chan(target_dir, chan_data_eeg, chan_data_eog, hypnogram, epoch_time, fs)
     info_dir = [target_dir, 'info/'];
     
     % Load all time values from text files
@@ -82,6 +82,9 @@ function [chan_data_eeg_new, chan_data_eog_new, hypnogram_new] = edfx_process_ti
         begin_time = hyp_start_time;
         btvec = hyp_start_vec;
     end
+    
+    % Wilson: Relative begin time in seconds
+    bt_relative = etime(btvec, rec_start_vec);
     
     % Difference between recording stop and lights on time to determine which
     % to use as the end time

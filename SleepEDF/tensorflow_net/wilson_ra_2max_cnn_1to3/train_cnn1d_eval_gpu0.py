@@ -43,6 +43,8 @@ tf.app.flags.DEFINE_string("emg_eval_data", "../data/eval_data_1.mat", "Point to
 tf.app.flags.DEFINE_string("emg_test_data", "../test_data.mat", "Point to directory of input data")
 tf.app.flags.DEFINE_string("out_dir", "./output/", "Point to output directory")
 tf.app.flags.DEFINE_string("checkpoint_dir", "./checkpoint/", "Point to checkpoint directory")
+tf.app.flags.DEFINE_string("tensorboard_dir", "./tensorboard/", "Point to tensorboard directory")
+tf.app.flags.DEFINE_boolean("save_tb_data", False, "Save tensorboard data or not")
 
 tf.app.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
 tf.flags.DEFINE_integer("num_filter", 500, "Number of filters per filter size (default: 400)")
@@ -65,24 +67,27 @@ print("")
 out_path = os.path.abspath(os.path.join(os.path.curdir,FLAGS.out_dir))
 # path where checkpoint models are stored
 checkpoint_path = os.path.abspath(os.path.join(out_path,FLAGS.checkpoint_dir))
+tensorboard_path = os.path.abspath(os.path.join(out_path,FLAGS.tensorboard_dir))
+
 if not os.path.isdir(os.path.abspath(out_path)): os.makedirs(os.path.abspath(out_path))
 if not os.path.isdir(os.path.abspath(checkpoint_path)): os.makedirs(os.path.abspath(checkpoint_path))
 
 config = Config()
 config.dropout_keep_prob = FLAGS.dropout_keep_prob
 config.num_filters = FLAGS.num_filter
+config.save_tb_data = FLAGS.save_tb_data
 
 eeg_active = ((FLAGS.eeg_train_data != "") & (FLAGS.eeg_test_data != ""))
 eog_active = ((FLAGS.eog_train_data != "") & (FLAGS.eog_test_data != ""))
 emg_active = ((FLAGS.emg_train_data != "") & (FLAGS.emg_test_data != ""))
 
 # it is important not to shuffle the data here as we are going to combine them after filtering
-if (eeg_active):
+if eeg_active:
     print("eeg active")
     # Initalize the data generator separately for the training, validation, and test sets
-    eeg_train_gen = EqualDataGenerator(os.path.abspath(FLAGS.eeg_train_data), data_shape=[config.time_length, config.freq_length], shuffle = False)
-    eeg_test_gen = DataGenerator(os.path.abspath(FLAGS.eeg_test_data), data_shape=[config.time_length, config.freq_length], shuffle = False, test_mode=True)
-    eeg_eval_gen = DataGenerator(os.path.abspath(FLAGS.eeg_eval_data), data_shape=[config.time_length, config.freq_length], shuffle = False, test_mode=True)
+    eeg_train_gen = EqualDataGenerator(os.path.abspath(FLAGS.eeg_train_data), data_shape=[config.time_length, config.freq_length], shuffle=False)
+    eeg_test_gen = DataGenerator(os.path.abspath(FLAGS.eeg_test_data), data_shape=[config.time_length, config.freq_length], shuffle=False, test_mode=True)
+    eeg_eval_gen = DataGenerator(os.path.abspath(FLAGS.eeg_eval_data), data_shape=[config.time_length, config.freq_length], shuffle=False, test_mode=True)
     # load pretrained filterbank and do filtering first
     eeg_filter = loadmat(FLAGS.eeg_pretrainedfb_path)
     Wfb = eeg_filter['Wfb']
@@ -91,7 +96,7 @@ if (eeg_active):
     eeg_eval_gen.filter_with_filterbank(Wfb)
     del Wfb, eeg_filter
 
-if (eog_active):
+if eog_active:
     print("eog active")
     # Initalize the data generator seperately for the training, validation, and test sets
     eog_train_gen = EqualDataGenerator(os.path.abspath(FLAGS.eog_train_data), data_shape=[config.time_length, config.freq_length], shuffle = False)
@@ -106,7 +111,7 @@ if (eog_active):
     del Wfb, eog_filter
 
 # EMG not active for Sleep-EDF
-if (emg_active):
+if emg_active:
     print("emg active")
     # Initalize the data generator seperately for the training, validation, and test sets
     emg_train_gen = EqualDataGenerator(os.path.abspath(FLAGS.emg_train_data), data_shape=[config.time_length, config.freq_length], shuffle = False)
@@ -126,7 +131,7 @@ test_generator = eeg_test_gen
 eval_generator = eeg_eval_gen
 
 # concatenate different channels
-if (eog_active):
+if eog_active:
     train_generator.X = np.concatenate((train_generator.X, eog_train_gen.X), axis=-1)
     train_generator.data_shape = train_generator.X.shape[1:]
     test_generator.X = np.concatenate((test_generator.X, eog_test_gen.X), axis=-1)
@@ -134,7 +139,7 @@ if (eog_active):
     eval_generator.X = np.concatenate((eval_generator.X, eog_eval_gen.X), axis=-1)
     eval_generator.data_shape = eval_generator.X.shape[1:]
 
-if (emg_active):
+if emg_active:
     train_generator.X = np.concatenate((train_generator.X, emg_train_gen.X), axis=-1)
     train_generator.data_shape = train_generator.X.shape[1:]
     test_generator.X = np.concatenate((test_generator.X, emg_test_gen.X), axis=-1)
@@ -145,11 +150,11 @@ if (emg_active):
 del eeg_train_gen
 del eeg_test_gen
 del eeg_eval_gen
-if (eog_active):
+if eog_active:
     del eog_train_gen
     del eog_test_gen
     del eog_eval_gen
-if (emg_active):
+if emg_active:
     del emg_train_gen
     del emg_test_gen
     del emg_eval_gen
@@ -157,7 +162,7 @@ if (emg_active):
 
 # data normalization here
 X = train_generator.X
-X = np.reshape(X,(train_generator.data_size*train_generator.data_shape[0], train_generator.data_shape[1]))
+X = np.reshape(X, (train_generator.data_size*train_generator.data_shape[0], train_generator.data_shape[1]))
 meanX = X.mean(axis=0)
 stdX = X.std(axis=0)
 X = (X - meanX) / stdX
@@ -165,12 +170,12 @@ train_generator.X = np.reshape(X, (train_generator.data_size, train_generator.da
 train_generator.shuffle_data()
 
 X = eval_generator.X
-X = np.reshape(X,(eval_generator.data_size*eval_generator.data_shape[0], eval_generator.data_shape[1]))
+X = np.reshape(X, (eval_generator.data_size*eval_generator.data_shape[0], eval_generator.data_shape[1]))
 X = (X - meanX) / stdX
 eval_generator.X = np.reshape(X, (eval_generator.data_size, eval_generator.data_shape[0], eval_generator.data_shape[1]))
 
 X = test_generator.X
-X = np.reshape(X,(test_generator.data_size*test_generator.data_shape[0], test_generator.data_shape[1]))
+X = np.reshape(X, (test_generator.data_size*test_generator.data_shape[0], test_generator.data_shape[1]))
 X = (X - meanX) / stdX
 test_generator.X = np.reshape(X, (test_generator.data_size, test_generator.data_shape[0], test_generator.data_shape[1]))
 
@@ -216,13 +221,16 @@ with tf.Graph().as_default():
         out_dir = os.path.abspath(os.path.join(os.path.curdir,FLAGS.out_dir))
         print("Writing to {}\n".format(out_dir))
 
+        # Save model data and tensorboard data
         saver = tf.train.Saver(tf.all_variables(),max_to_keep=1)
+        writer_train = tf.summary.FileWriter(tensorboard_path + 'train')
+        writer_train.add_graph(sess.graph)
 
         # initialize all variables
         print("Model initialized")
         sess.run(tf.initialize_all_variables())
 
-        def train_step(x_batch, y_batch1, y_batch2, y_batch3):
+        def train_step(x_batch, y_batch1, y_batch2, y_batch3, current_step):
             """
             A single training step
             """
@@ -233,9 +241,17 @@ with tf.Graph().as_default():
               cnn.input_y3: y_batch3,
               cnn.dropout_keep_prob: config.dropout_keep_prob
             }
-            _, step, loss, acc1, acc2, acc3 = sess.run(
-               [train_op, global_step, cnn.loss, cnn.accuracy1, cnn.accuracy2, cnn.accuracy3],
-               feed_dict)
+            if current_step % config.evaluate_every == 0 and config.save_tb_data:
+                _, step, loss, acc1, acc2, acc3, s= sess.run(
+                   [train_op, global_step, cnn.loss, cnn.accuracy1, cnn.accuracy2, cnn.accuracy3, cnn.summ],
+                   feed_dict)
+                writer_train.add_summary(s, current_step)
+                writer_train.flush()
+            else:
+                _, step, loss, acc1, acc2, acc3= sess.run(
+                   [train_op, global_step, cnn.loss, cnn.accuracy1, cnn.accuracy2, cnn.accuracy3],
+                   feed_dict)
+
             return step, loss, acc1, acc2, acc3
 
         def dev_step(x_batch, y_batch1, y_batch2, y_batch3):
@@ -251,6 +267,7 @@ with tf.Graph().as_default():
             return yhat1, yhat2, yhat3
 
         start_time = time.time()
+        current_step = tf.train.global_step(sess, global_step)
         # Loop over number of epochs
         for epoch in range(config.training_epoch):
             print("{} Epoch number: {}".format(datetime.now(), epoch + 1))
@@ -264,16 +281,16 @@ with tf.Graph().as_default():
                     y_batch3, label_batch3 = train_generator.next_batch(config.batch_size_per_class)
 
                 x_batch = np.expand_dims(x_batch,axis=3)
-                train_step_, train_loss_, train_acc1_, train_acc2_, train_acc3_ = train_step(x_batch, y_batch1, y_batch2, y_batch3)
+                train_step_, train_loss_, train_acc1_, train_acc2_, train_acc3_, = train_step(x_batch, y_batch1, y_batch2, y_batch3, current_step)
                 time_str = datetime.now().isoformat()
                 print("{}: step {}, loss {}, acc1 {}, acc2 {}, acc3 {}".format(time_str, train_step_, train_loss_,
                                                                                train_acc1_, train_acc2_, train_acc3_))
                 train_loss_epoch += train_loss_
                 step += 1
-
                 current_step = tf.train.global_step(sess, global_step)
+
+                # Validate the model on the entire evaluation test set after each epoch
                 if current_step % config.evaluate_every == 0:
-                    # Validate the model on the entire evaluation test set after each epoch
                     print("{} Start validation".format(datetime.now()))
 
                     eval_yhat1 = np.zeros_like(eval_generator.data_index)
@@ -290,27 +307,12 @@ with tf.Graph().as_default():
                         eval_yhat2[(eval_step-1)*config.batch_size : eval_step*config.batch_size] = eval_yhat2_
                         eval_yhat3[(eval_step-1)*config.batch_size : eval_step*config.batch_size] = eval_yhat3_
                         eval_step += 1
-                    if(eval_generator.pointer < len(eval_generator.data_index)):
-                        actual_len, x_batch, y_batch1, label_batch1_, \
-                            y_batch2, label_batch2_, \
-                            y_batch3, label_batch3_ = eval_generator.rest_batch(config.batch_size)
-                        x_batch = np.expand_dims(x_batch,axis=3)
-                        eval_yhat1_, eval_yhat2_, eval_yhat3_ = dev_step(x_batch, y_batch1, y_batch2, y_batch3)
-                        eval_yhat1[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat1_
-                        eval_yhat2[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat2_
-                        eval_yhat3[(eval_step-1)*config.batch_size : len(eval_generator.data_index)] = eval_yhat3_
                     eval_yhat1 = eval_yhat1 + 1 #wilson: +1 match the origin label (0-4 to 1-5)
                     eval_yhat2 = eval_yhat2 + 1
                     eval_yhat3 = eval_yhat3 + 1
                     eval_acc1 = accuracy_score(eval_generator.label[:-1], eval_yhat1[1:])
                     eval_acc2 = accuracy_score(eval_generator.label, eval_yhat2)
                     eval_acc3 = accuracy_score(eval_generator.label[1:], eval_yhat3[:-1])
-                    eval_fscore1 = f1_score(eval_generator.label[:-1], eval_yhat1[1:], average='macro')
-                    eval_fscore2 = f1_score(eval_generator.label, eval_yhat2, average='macro')
-                    eval_fscore3 = f1_score(eval_generator.label[1:], eval_yhat3[:-1], average='macro')
-                    eval_kappa1 = cohen_kappa_score(eval_generator.label[:-1], eval_yhat1[1:])
-                    eval_kappa2 = cohen_kappa_score(eval_generator.label, eval_yhat2)
-                    eval_kappa3 = cohen_kappa_score(eval_generator.label[1:], eval_yhat3[:-1])
 
 
                     test_yhat1 = np.zeros_like(test_generator.data_index)
@@ -344,11 +346,35 @@ with tf.Graph().as_default():
                     test_acc3 = accuracy_score(test_generator.label[1:], test_yhat3[:-1])
 
                     print("{:g} {:g} {:g} {:g} {:g} {:g}".format(eval_acc1, eval_acc2,  eval_acc3, test_acc1, test_acc2,  test_acc3))
-                    with open(os.path.join(out_dir, "result_log.txt"), "a") as text_file:
-                        text_file.write("{:g} {:g} {:g} {:g} {:g} {:g}\n".format(eval_acc1, eval_acc2,  eval_acc3, test_acc1, test_acc2,  test_acc3))
+                    if current_step == config.evaluate_every:  # wilson: erase the old file at the first time
+                        with open(os.path.join(out_dir, "result_log.txt"), "w") as text_file:
+                            text_file.write("{:g} {:g} {:g} {:g} {:g} {:g}\n".format(eval_acc1, eval_acc2,  eval_acc3, test_acc1, test_acc2,  test_acc3))
+                    else:
+                        with open(os.path.join(out_dir, "result_log.txt"), "a") as text_file:
+                            text_file.write("{:g} {:g} {:g} {:g} {:g} {:g}\n".format(eval_acc1, eval_acc2,  eval_acc3, test_acc1, test_acc2,  test_acc3))
+
+                    # save tensorboard data on evaluation data
+                    if config.save_tb_data:
+                        x_batch, y_batch1, label_batch1_,\
+                            y_batch2, label_batch2_,\
+                            y_batch3, label_batch3_ = eval_generator.get_whole_batch()
+                        x_batch = np.expand_dims(x_batch, axis=3)
+                        feed_dict = {
+                            cnn.input_x: x_batch,
+                            cnn.input_y1: y_batch1,
+                            cnn.input_y2: y_batch2,
+                            cnn.input_y3: y_batch3,
+                            cnn.dropout_keep_prob: 1.0
+                        }
+                        if current_step == 50:
+                            writer_eval = tf.summary.FileWriter(tensorboard_path + 'eval')
+                            writer_eval.add_graph(sess.graph)
+                        s = sess.run(cnn.summ, feed_dict=feed_dict)
+                        writer_eval.add_summary(s, current_step)
+                        writer_eval.flush()
 
                     # save the best model based on accuracy on evaluation data
-                    if((eval_acc1 + eval_acc2 + eval_acc3)/3 > best_acc):
+                    if (eval_acc1 + eval_acc2 + eval_acc3)/3 > best_acc:
 
                         best_acc = (eval_acc1 + eval_acc2 + eval_acc3)/3 # update best performance
 

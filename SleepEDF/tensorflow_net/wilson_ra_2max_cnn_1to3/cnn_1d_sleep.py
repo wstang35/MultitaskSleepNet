@@ -42,6 +42,10 @@ class CNN1DSleep(object):
                                             padding='VALID',
                                             name="pool")
                 pooled_outputs.append(pooled_max)
+                # tf.summary.histogram("weights", W)
+                # tf.summary.histogram("biases", b)
+                # tf.summary.histogram("activations", h)
+                # tf.summary.histogram("pooled_max", pooled_max)
 
         # Combine all the pooled features
         num_maxp = 2
@@ -50,10 +54,12 @@ class CNN1DSleep(object):
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total*num_maxp])
 
         # Adaptation weights
-        Wa = tf.Variable(tf.truncated_normal([num_filters_total*num_maxp], stddev=0.1), name="Wa")
-        ba = tf.Variable(tf.constant(0.1, shape=[num_filters_total*num_maxp]), name="ba")
-        Wra = tf.tanh(tf.multiply(self.h_pool_flat, Wa) + ba)
-        Wra = tf.expand_dims(Wra, -1)
+        with tf.name_scope("adaptation"):
+            Wa = tf.Variable(tf.truncated_normal([num_filters_total*num_maxp], stddev=0.1), name="Wa")
+            ba = tf.Variable(tf.constant(0.1, shape=[num_filters_total*num_maxp]), name="ba")
+            Wra = tf.tanh(tf.multiply(self.h_pool_flat, Wa) + ba)
+            Wra = tf.expand_dims(Wra, -1)
+
         # Add dropout
         with tf.name_scope("dropout"):
             self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
@@ -68,8 +74,8 @@ class CNN1DSleep(object):
             l2_loss += tf.nn.l2_loss(b1)
             self.scores1 = tf.nn.xw_plus_b(self.h_drop, W1_ra, b1, name="scores1")
             self.scores1 = tf.reshape(self.scores1, shape=[-1, 5])
-            self.predictions1 = tf.argmax(self.scores1, 1, name="predictions1")
-            self.predictions1 = tf.reshape(self.predictions1, shape=[-1])
+            self.predictions1 = tf.argmax(self.scores1, 1)
+            self.predictions1 = tf.reshape(self.predictions1, shape=[-1], name="predictions1")
 
         # Final (unnormalized) scores and predictions
         with tf.name_scope("output2"):
@@ -80,8 +86,8 @@ class CNN1DSleep(object):
             l2_loss += tf.nn.l2_loss(b2)
             self.scores2 = tf.nn.xw_plus_b(self.h_drop, W2_ra, b2, name="scores2")
             self.scores2 = tf.reshape(self.scores2, shape=[-1, 5])
-            self.predictions2 = tf.argmax(self.scores2, 1, name="predictions2")
-            self.predictions2 = tf.reshape(self.predictions2, shape=[-1])
+            self.predictions2 = tf.argmax(self.scores2, 1)
+            self.predictions2 = tf.reshape(self.predictions2, shape=[-1], name="predictions2")
 
         # Final (unnormalized) scores and predictions
         with tf.name_scope("output3"):
@@ -92,8 +98,8 @@ class CNN1DSleep(object):
             l2_loss += tf.nn.l2_loss(b3)
             self.scores3 = tf.nn.xw_plus_b(self.h_drop, W3_ra, b3, name="scores3")
             self.scores3 = tf.reshape(self.scores3, shape=[-1, 5])
-            self.predictions3 = tf.argmax(self.scores3, 1, name="predictions3")
-            self.predictions3 = tf.reshape(self.predictions3, shape=[-1])
+            self.predictions3 = tf.argmax(self.scores3, 1)
+            self.predictions3 = tf.reshape(self.predictions3, shape=[-1], name="predictions3")
 
         # CalculateMean cross-entropy loss
         with tf.name_scope("loss"):
@@ -112,3 +118,9 @@ class CNN1DSleep(object):
 
             correct_predictions3 = tf.equal(self.predictions3, tf.argmax(self.input_y3, 1))
             self.accuracy3 = tf.reduce_mean(tf.cast(correct_predictions3, "float"), name="accuracy3")
+
+            tf.summary.scalar("accuracy1", self.accuracy1)
+            tf.summary.scalar("accuracy2", self.accuracy2)
+            tf.summary.scalar("accuracy3", self.accuracy3)
+
+        self.summ = tf.summary.merge_all()

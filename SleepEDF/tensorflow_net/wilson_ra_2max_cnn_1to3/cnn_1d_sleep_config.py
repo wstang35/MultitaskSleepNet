@@ -27,3 +27,5 @@ class Config(object):
         self.filter_sizes = "3,5,7"  # sizes of filterbanks
         self.num_filters = 500 # number of conv. filters for each size
         self.num_classes = 5  # Number of output classes
+
+        self.save_tb_data = False

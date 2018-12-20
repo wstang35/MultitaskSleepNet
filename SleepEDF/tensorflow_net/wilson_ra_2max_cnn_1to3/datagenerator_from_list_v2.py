@@ -192,7 +192,6 @@ class DataGenerator:
         # return array of images and labels
         return actual_len, batch_x, batch_y1, batch_label1, batch_y2, batch_label2, batch_y3, batch_label3
 
-
     def filter_with_filterbank(self, Wfb):
         X = np.reshape(self.X, (self.data_size*self.data_shape[0], self.data_shape[1]))
         X = np.dot(X, Wfb)
@@ -200,3 +199,15 @@ class DataGenerator:
 
         self.data_shape = self.X.shape[1:]
         del X
+
+    # wilson: get the whole batch
+    def get_whole_batch(self):
+        batch_x = self.X
+        batch_y1 = np.concatenate((self.y[0:1], self.y[0:-1]), axis=0)
+        batch_y2 = self.y
+        batch_y3 = np.concatenate((self.y[1:], self.y[-1:]), axis=0)
+        batch_label1 = np.concatenate((self.label[0:1], self.label[0:-1]), axis=0)
+        batch_label2 = self.label
+        batch_label3 = np.concatenate((self.label[1:], self.label[-1:]), axis=0)
+
+        return batch_x, batch_y1, batch_label1, batch_y2, batch_label2, batch_y3, batch_label3
